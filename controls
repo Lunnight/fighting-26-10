@@ -1,0 +1,48 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Controls : MonoBehaviour
+{
+    Animator animator;
+    Rigidbody2D rb;
+    float inputX;
+
+    public float speed = 8f;
+
+    //Start is called before the first frame update
+    void Start()
+    {
+        //get our component references directly from the urrent game object
+        animator = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody2D>();
+    }
+    // Update is called once per frame
+    void Update()
+    {
+        //gets our user's horizontal movement input
+        inputX = Input.GetAxis("Horizontal");
+    }
+    //out your physics and animation triggers inside fixed update
+    private void FixedUpdate()
+    {
+        //flip our sprites on the x axis when changing direction
+        if (inputX > 0)
+            transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
+        if (inputX < 0)
+            transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+
+        //move our character by adding a velocity vector
+        rb.velocity = new Vector2(inputX * speed, rb.velocity.y);
+
+        //set animation triggers for running when input is positive and idle for negative
+        if (Mathf.Abs(inputX) > 0)
+        {
+            animator.SetTrigger("Run");
+        }
+        else
+        {
+            animator.SetTrigger("Idle");
+        }
+    }
+}
